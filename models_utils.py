@@ -1,6 +1,10 @@
+import imp
 import os
 from dataclasses import dataclass
 from numpy import less
+
+
+
 
 @dataclass
 class ModelPaths():
@@ -50,3 +54,21 @@ def process_results(results):
     # returns a list of tuples (prediciton index, probability)
     results = [vaild_result for vaild_result in results if vaild_result[1]]
     return results
+
+def get_response_from_results(models_results, MASTER_MODEL, SUB_MODELS):
+    result = dict()
+    result["data"] = list()
+    response_dict = dict()
+    for category_index, disease_list in models_results.items():
+        cat_name = MASTER_MODEL.get_class_at_index(category_index)
+        response_dict["category"] = cat_name
+        response_dict["predection"] = list()
+        # disease_list[0] -->disease_index , disease_list[1] -->probability of disease , 
+        for idx in range(0, len(disease_list), 2):
+            disease_index = disease_list[0]
+            probability = disease_list[1]
+            disease_name = SUB_MODELS[category_index].get_class_at_index(disease_index)
+            response_dict["predection"].append({"diseases" : disease_name, "probability": probability})
+    result["data"].append(response_dict)
+    return result
+    # return dumps(result)

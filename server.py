@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
 from onnx_generic_class import *
 from models_utils import *
 import json
@@ -49,7 +50,9 @@ async def run_models(image_path):
 @app.post("/upload")
 async def create_upload_file(img: UploadFile = File(...)):
     results = await run_models(img.file)
-    return {"results": results}
+    json_response = get_response_from_results(results, MASTER_MODEL, SUB_MODELS)
+    json_response = JSONResponse(content=json_response)
+    return json_response
 
 if __name__ == "__main__":
     uvicorn.run(app, port=8000, host="0.0.0.0")

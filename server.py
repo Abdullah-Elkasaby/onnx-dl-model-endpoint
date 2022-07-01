@@ -1,7 +1,7 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
-from onnx_generic_class import *
-from models_utils import *
+from OnnxModel import *
+from ModelsUtils import *
 import json
 import uvicorn
 
